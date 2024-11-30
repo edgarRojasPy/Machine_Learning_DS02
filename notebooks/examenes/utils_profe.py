@@ -59,3 +59,26 @@ def ver_tipos_objects(df):
     columnas_object = df.select_dtypes(include='object').columns
     print("Columnas de tipo 'object':")
     print(columnas_object)    
+
+
+def desc(df, columns=None):
+    """
+    Genera un cuadro de estadísticas descriptivas con el porcentaje de std/mean incluido.
+
+    Parameters:
+    df (pd.DataFrame): El DataFrame a analizar.
+    columns (list): Lista de columnas sobre las cuales aplicar el cálculo. Si es None, se incluyen todas las columnas numéricas.
+
+    Returns:
+    pd.DataFrame: DataFrame con estadísticas descriptivas y el porcentaje std/mean.
+    """
+    if columns is None:
+        columns = df.select_dtypes(include=['number']).columns  # Seleccionar todas las columnas numéricas si no se especifican
+
+    # Generar el describe solo para las columnas seleccionadas
+    df_describe = df[columns].describe().T
+
+    # Calcular y agregar la columna del porcentaje std/mean
+    df_describe['%std/mean'] = ((df_describe['std'] / df_describe['mean']) * 100).round(2)
+
+    return df_describe
